@@ -1,0 +1,134 @@
+﻿@model ShedualeGenerator.Models.Teacher
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<h1>Create</h1>
+
+<h4>Teacher</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContractType" class="control-label"></label>
+                <input asp-for="ContractType" class="form-control" />
+                <span asp-validation-for="ContractType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Avalability" class="control-label"></label>
+                <input asp-for="Avalability" class="form-control" />
+                <span asp-validation-for="Avalability" class="text-danger"></span>
+            </div>
+            <section>
+                <select name="SubjectList" asp-items="@ViewBag.SubjectList" id="SubjectListId">
+                    <option>Select--</option>
+                </select>
+                <div id="SubjectGroup">
+                    <div class="card alert" style="width:min-content">
+                        <div class="info-box-content mb-4">
+                            <div class="card-body">
+                                <button type="button" data-dismiss="alert">&times;</button>
+                                <p class="info-box-text">Subject Name</p>
+                                <p class="info-box-text">Semester</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </section>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+<script type="text/javascript">
+    function createNodes(Sname, Semester) {
+        var div1 = document.createElement("div");
+        div1.style.width = 'min-content';
+        div1.classList.add("card", "alert");
+
+        var div2 = document.createElement("div");
+        div2.classList.add("info-box-content", "mb-4");
+
+        var div3 = document.createElement("div");
+        div3.classList.add("card-body");
+
+        var btn = document.createElement("button");
+        btn.setAttribute("type", "button");
+        btn.setAttribute("data-dismiss", "alert");
+        btn.textContent = "x";
+
+        var p1 = document.createElement("p");
+        p1.classList.add("info-box-text");
+        p1.textContent = Sname;
+
+        var p2 = document.createElement("p");
+        p2.classList.add("info-box-text");
+        p2.textContent = Semester;
+
+        div3.appendChild(btn);
+        div3.appendChild(p1);
+        div3.appendChild(p2);
+
+        div1.appendChild(div2).appendChild(div3);
+
+        document.getElementById("SubjectGroup").appendChild(div1);
+       
+
+    }
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $("#SubjectListId").change(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Teachers/GetSubject/?Id=" + $("#SubjectListId").val(),
+
+                dataType: "JSON",
+                success: function (data) {
+                    console.log(data[0]);
+                    console.log(data[0].name);
+                    console.log(data[0].semester);
+                   createNodes(data[0].name, data[0].semester)
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+        });
+       
+    });
+
+
+
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
