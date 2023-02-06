@@ -13,7 +13,7 @@ namespace HallsAndLabsScheduleGenerator.Controllers
     public class TeachersController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        public List<int> SubjectIds = new List<int>();
         public TeachersController(ApplicationDbContext context)
         {
             _context = context;
@@ -156,6 +156,18 @@ namespace HallsAndLabsScheduleGenerator.Controllers
         {
             var subject = _context.Subjects.Where(x => x.Id == Id);
             return Json(subject);
+        }
+        public JsonResult GetSubjectByName(string name)
+        {
+            var subject = _context.Subjects.Where(x => x.Name == name);
+            return Json(subject);
+        }
+
+
+        public JsonResult AssignSubjectIds(int[] Ids)
+        {
+            SubjectIds.AddRange(Ids);
+            return Json("ok");
         }
     }
 }

@@ -38,16 +38,16 @@
                         <div class="info-box-content mb-4">
                             <div class="card-body">
                                 <button type="button" data-dismiss="alert">&times;</button>
-                                <p class="info-box-text">Subject Name</p>
+                                <p class="info-box-text" id="SubjectName">Subject Name</p>
                                 <p class="info-box-text">Semester</p>
                             </div>
                         </div>
                     </div>
                 </div>
-               
+
             </section>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" id="creatBtn"/>
             </div>
 
         </form>
@@ -61,6 +61,15 @@
 
 
 <script type="text/javascript">
+    var SubjectIdsList = [];
+    var counter = 0;
+
+
+
+
+
+
+
     function createNodes(Sname, Semester) {
         var div1 = document.createElement("div");
         div1.style.width = 'min-content';
@@ -71,14 +80,18 @@
 
         var div3 = document.createElement("div");
         div3.classList.add("card-body");
+        div3.setAttribute("id", "divparent");
 
         var btn = document.createElement("button");
         btn.setAttribute("type", "button");
         btn.setAttribute("data-dismiss", "alert");
+        btn.setAttribute("onclick", "createOption(this)");
         btn.textContent = "x";
+
 
         var p1 = document.createElement("p");
         p1.classList.add("info-box-text");
+        p1.setAttribute("id","SubjectName")
         p1.textContent = Sname;
 
         var p2 = document.createElement("p");
@@ -92,7 +105,7 @@
         div1.appendChild(div2).appendChild(div3);
 
         document.getElementById("SubjectGroup").appendChild(div1);
-       
+
 
     }
 
@@ -104,27 +117,90 @@
 
 
     $(document).ready(function () {
+
+        var selList = document.getElementById("SubjectListId");
         $("#SubjectListId").change(function () {
+
             $.ajax({
                 type: "GET",
                 url: "/Teachers/GetSubject/?Id=" + $("#SubjectListId").val(),
 
                 dataType: "JSON",
                 success: function (data) {
-                    console.log(data[0]);
-                    console.log(data[0].name);
-                    console.log(data[0].semester);
-                   createNodes(data[0].name, data[0].semester)
+
+                    createNodes(data[0].name, data[0].semester);
+                    $('#SubjectListId option:selected').remove();
+
+                    SubjectIdsList[counter] = $("#SubjectListId").val();
+                    counter++;
+
                 },
                 error: function (req, status, error) {
                     console.log(msg);
                 }
             });
         });
-       
+
+
+
+
+
+
+
+        var createbtn = document.getElementById("creatBtn");
+        createbtn.onclick(function () {
+            console.log(SubjectIdsList);
+            $.ajax({
+                type: "GET",
+                url: "/Teachers/AssignSubjectIds/",
+                caches: false,
+                data: SubjectIdsList,
+                dataType: "JSON",
+                traditional: true,
+                success: function (data) {
+                    alert("Ok")
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+
+        })
     });
 
+    function createOption(btn) {
+        console.log("hi");
+        console.log(btn.parentNode.childNodes[1]);
 
+
+
+        $.ajax({
+            type: "GET",
+            url: "/Teachers/GetSubjectByName/?name=" + btn.parentNode.childNodes[1].textContent,
+
+            dataType: "JSON",
+            success: function (data) {
+                console.log(data);
+                console.log(data[0]);
+                var element = document.createElement("option");
+                element.setAttribute("value", data[0].id);
+                element.textContent = data[0].name;
+                document.getElementById("SubjectListId").appendChild(element);
+                for (var i = 0; i < SubjectIdsList.length; i++) {
+                    if (SubjectIdsList[i] == data[0].name)
+                    {
+                        SubjectIdsList.splice(i, 1);
+                        counter--;
+                    }
+                }
+              
+               
+            },
+            error: function (req, status, error) {
+                console.log(msg);
+            }
+        });
+    }
 
 
 </script>
