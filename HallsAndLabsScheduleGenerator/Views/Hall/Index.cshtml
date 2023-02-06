@@ -1,9 +1,8 @@
-﻿@model IEnumerable<ShedualeGenerator.Models.Subject>
+﻿@model IEnumerable<ShedualeGenerator.Models.Hall>
 
 @{
-    ViewData["Title"] = "Subjects";
+    ViewData["Title"] = "Halls";
 }
-
 
 
 
@@ -21,12 +20,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Subjects</h1>
+                <h1>Halls</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="subject" asp-action="index">Home</a></li>
-                    <li class="breadcrumb-item active">Sujects</li>
+                    <li class="breadcrumb-item"><a asp-controller="home" asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item active">Halls</li>
                 </ol>
             </div>
         </div>
@@ -41,8 +40,7 @@
 
                 <div class="card">
                     <div class="card-header" style="color: #17a2b8">
-                        <span class="fa fa-plus"></span> <a style="color: #17a2b8;" data-toggle="modal" data-target="@("#CreateSubject")" data-url="@Url.Action($"Create")"><b>Create New</b></a>
-                        @await Html.PartialAsync("_addSubjectPartialView", new ShedualeGenerator.Models.Subject())
+                        <span class="fa fa-plus"></span> <a style="color: #17a2b8;" asp-controller="hall" asp-action="create"><b>Create New</b></a>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -50,7 +48,11 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Semester</th>
+                                    <th>Students Count</th>
+                                    <th>Status</th>
+                                    <th>Board</th>
+                                    <th>Mick</th>
+                                    <th>Projector</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -59,14 +61,18 @@
                                 {
                                     <tr>
                                         <td>@item.Name</td>
-                                        <td>@item.Semester</td>
+                                        <td>@item.StudentCount</td>
+                                        <td>@item.Status</td>
+                                        <td>@item.Board</td>
+                                        <td>@item.Mick</td>
+                                        <td>@item.Projector</td>
                                         <td class="project-actions">
-                                            <a class="btn btn-warning" data-toggle="modal" data-target="@("#EditSubject-"+ item.Id)" ><i style="color:white" class="fa fa-pen"></i></a>
-                                            @await Html.PartialAsync("_editSubjectPartialView", item)
-                                            <a class="btn btn-danger" data-toggle="modal" data-target="@("#DeleteSubject-"+ item.Id)"><i class="fa fa-trash"></i></a>
-                                            @await Html.PartialAsync("_deleteSubjectPartialView", item)
+                                            <a class="btn btn-warning" asp-action="edit" asp-route-id="@item.Id"><i style="color:white" class="fa fa-pen"></i></a>
+                                            <a class="btn btn-danger" data-toggle="modal" data-target="@("#DeleteHall-"+ item.Id)"><i class="fa fa-trash"></i></a>
+                                            @await Html.PartialAsync("_deleteHallPartialView", item)
                                         </td>
                                     </tr>
+                                    
                                 }
                             </tbody>
 
@@ -123,11 +129,19 @@
                 "responsive": true,
             });
         });
-     
+
     </script>
 
 
 }
+
+
+
+
+
+
+
+
 
 
 

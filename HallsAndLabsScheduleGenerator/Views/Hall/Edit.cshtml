@@ -1,0 +1,121 @@
+﻿@model ShedualeGenerator.Models.Hall
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+
+
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Edit Hall</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="hall" asp-action="index">Halls</a></li>
+                    <li class="breadcrumb-item active">Edit Hall</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- jquery validation -->
+                <div class="card card-gray" id="card-size">
+                    <div class="card-header rounded-0" style="background-color: #44678c">
+                        <h3 class="card-title">Edit Hall</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form asp-action="Edit" id="form-text-color">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <div class="row input-style">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Name" class="control-label"></label>
+                                    <input asp-for="Name" class="form-control rounded-0" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Status" class="control-label"></label>
+                                    <input asp-for="Status" class="form-control rounded-0" />
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row input-style">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Student Count</label>
+                                    <input asp-for="StudentCount" class="form-control rounded-0" />
+                                    <span asp-validation-for="StudentCount" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Board" class="control-label"></label>
+                                    <input asp-for="Board" class="form-control rounded-0" />
+                                    <span asp-validation-for="Board" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row input-style">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Mick</label>
+                                    <input asp-for="Mick" class="form-control rounded-0" />
+                                    <span asp-validation-for="Mick" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Projector" class="control-label"></label>
+                                    <input asp-for="Projector" class="form-control rounded-0" />
+                                    <span asp-validation-for="Projector" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-left:20px; margin-right:100px; margin-top:20px; ">
+                            <input type="submit" value="Save" class="btn btn-success btn-flat" style="width: 100px" />
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-6">
+
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+
+
+
+
+
+
