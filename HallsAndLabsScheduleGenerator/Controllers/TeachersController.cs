@@ -164,7 +164,7 @@ namespace HallsAndLabsScheduleGenerator.Controllers
         }
 
 
-        public JsonResult AssignSubjectIds(int[] Ids)
+        public JsonResult AssignSubjectIds(List<int> Ids)
         {
             SubjectIds.AddRange(Ids);
             return Json("ok");
