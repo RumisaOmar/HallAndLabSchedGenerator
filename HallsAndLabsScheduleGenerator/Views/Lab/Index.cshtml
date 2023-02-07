@@ -62,7 +62,9 @@
                                         <td>@item.Projector</td>
                                         <td class="project-actions">
                                             <a class="btn btn-warning" data-toggle="tooltip" data-placement="left" title="Edit Lab" data-original-title="Tooltip on left" asp-action="Edit" asp-route-id="@item.Id"><i style="color:white" class="fa fa-pen"></i></a>
-                                            <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="Delete Lab" data-original-title="Tooltip on left" asp-action="Delete"  asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>      
+                                            <a class="btn btn-danger" data-toggle="modal" data-target="@("#DeleteSubject-"+ item.Id)"><i class="fa fa-trash"></i></a>
+                                            @await Html.PartialAsync("_deleteLabPartialView", item)
+                                            
                                         </td>
                                     </tr>
                                 }
