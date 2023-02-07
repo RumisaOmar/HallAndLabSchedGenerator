@@ -32,7 +32,7 @@ namespace HallsAndLabsScheduleGenerator.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email , EmailConfirmed = true};
                 var result = await userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -48,6 +48,32 @@ namespace HallsAndLabsScheduleGenerator.Controllers
                     
             }
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password,false, false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("index", "Home");
+                }
+
+                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+         
+
+            }
+            return View(model);
         }
 
 
