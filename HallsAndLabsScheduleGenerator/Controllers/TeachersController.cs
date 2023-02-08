@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HallsAndLabsScheduleGenerator.Data;
 using ShedualeGenerator.Models;
+using HallsAndLabsScheduleGenerator.ViewModel;
 
 namespace HallsAndLabsScheduleGenerator.Controllers
 {
     public class TeachersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        TeacherViewModel TeacherVM = new TeacherViewModel();
         public List<int> SubjectIds = new List<int>();
         public TeachersController(ApplicationDbContext context)
         {
@@ -55,16 +57,39 @@ namespace HallsAndLabsScheduleGenerator.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ContractType,Avalability")] Teacher teacher)
+        public async Task<IActionResult> Create([Bind("Id,Teacher,SubjectIds[]")] TeacherViewModel teacherVM)
         {
-            if (ModelState.IsValid)
+           // var teacher = Teacher;
+            var x = teacherVM.SubjectIds;
+            if ( ModelState.IsValid)
             {
-                _context.Add(teacher);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var teacher = teacherVM.Teacher;
+
+
+                    _context.Add(teacher);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                
+                
             }
-            return View(teacher);
+            return View(teacherVM);
         }
+
+        //public async Task<IActionResult> Create([Bind("Id,Name,ContractType,Avalability")] Teacher teacher)
+        //{
+        //    // var teacher = Teacher;
+        //    // SubjectIds = teacherVM.SubjectIds;
+        //    if (ModelState.IsValid)
+        //    {
+
+        //        _context.Add(teacher);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+
+
+        //    }
+        //    return View(teacher);
+        //}
 
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -163,10 +188,10 @@ namespace HallsAndLabsScheduleGenerator.Controllers
             return Json(subject);
         }
 
-
-        public JsonResult AssignSubjectIds(List<int> Ids)
+        [HttpPost]
+        public JsonResult AssignSubjectIds(int model)
         {
-            SubjectIds.AddRange(Ids);
+            //SubjectIds.AddRange(SubjectIdsList);
             return Json("ok");
         }
     }

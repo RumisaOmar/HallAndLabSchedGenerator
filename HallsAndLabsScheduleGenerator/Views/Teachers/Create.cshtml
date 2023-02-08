@@ -1,5 +1,4 @@
-﻿@model ShedualeGenerator.Models.Teacher
-
+﻿@model HallsAndLabsScheduleGenerator.ViewModel.TeacherViewModel
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,37 +11,29 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" id="createForm">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Teacher.Name" class="control-label"></label>
+                <input asp-for="Teacher.Name" class="form-control" />
+                <span asp-validation-for="Teacher.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ContractType" class="control-label"></label>
-                <input asp-for="ContractType" class="form-control" />
-                <span asp-validation-for="ContractType" class="text-danger"></span>
+                <label asp-for="Teacher.ContractType" class="control-label"></label>
+                <input asp-for="Teacher.ContractType" class="form-control" />
+                <span asp-validation-for="Teacher.ContractType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Avalability" class="control-label"></label>
-                <input asp-for="Avalability" class="form-control" />
-                <span asp-validation-for="Avalability" class="text-danger"></span>
+                <label asp-for="Teacher.Avalability" class="control-label"></label>
+                <input asp-for="Teacher.Avalability" class="form-control" />
+                <span asp-validation-for="Teacher.Avalability" class="text-danger"></span>
             </div>
             <section>
-                <select name="SubjectList" asp-items="@ViewBag.SubjectList" id="SubjectListId">
+                <select  asp-items="@ViewBag.SubjectList" id="SubjectListId">
                     <option>Select--</option>
                 </select>
                 <div id="SubjectGroup">
-                    <div class="card alert" style="width:min-content">
-                        <div class="info-box-content mb-4">
-                            <div class="card-body">
-                                <button type="button" data-dismiss="alert">&times;</button>
-                                <p class="info-box-text" id="SubjectName">Subject Name</p>
-                                <p class="info-box-text">Semester</p>
-                            </div>
-                        </div>
-                    </div>
+                   @*this where the card are created*@
                 </div>
 
             </section>
@@ -50,7 +41,7 @@
                 <input type="hidden"  id="ListOfIds" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Creat" class="btn btn-primary" id="creatBtn" />
+                <input type="submit" value="Creat" class="btn btn-primary" id="btnSubmit" />
             </div>
 
         </form>
@@ -64,7 +55,7 @@
 
 <script type="text/javascript">
     var SubjectIdsList = [];
-    var counter = 0;
+    
     $(document).ready(function () {
 
         var selList = document.getElementById("SubjectListId");
@@ -78,14 +69,13 @@
 
                 dataType: "JSON",
                 success: function (data) {
-
+                    SubjectIdsList.push(parseInt($("#SubjectListId").val()))
                     createNodes(data[0].name, data[0].semester);
                     $('#SubjectListId option:selected').remove();
 
 
-                  
-                    SubjectIdsList[counter] = $("#SubjectListId").val();
-                    counter++;
+                    
+                   
                     alert(SubjectIdsList);
                 },
                 error: function (req, status, error) {
@@ -95,7 +85,7 @@
         });
 
 
-
+      
 
 
 
@@ -131,10 +121,38 @@
         //    alert("in Submit");
         //});
 
-
+        var submitBTN = document.getElementById("btnSubmit");
+        submitBTN.onclick(function () {
+            var formData = new FormData();
+            formData.append("SubjectIds", SubjectIdsList);
+        });
 
     });
 
+
+    //function OnFormSubmit() {
+    //    var data = { SubjectIdsList }
+    //    var myData = JSON.stringify({ "model": data });
+    //    console.log(myData);
+    //    $.ajax({
+    //        contentType : 'application/json; charset=utf-8',
+    //        dataType: "json",
+    //        type: "POST",
+    //        url: "/Teachers/AssignSubjectIds",
+    //        //caches: false,
+    //        //traditional: true,
+    //        async: false,
+    //        data: myData,
+    //        success: function (data) {
+    //            alert("Ok")
+    //        },
+    //        error: function (req, status, error) {
+    //            console.log(msg);
+    //        }
+    //    });
+
+    //}
+        
     function createOption(btn) {
         console.log("hi");
         console.log(btn.parentNode.childNodes[1]);
@@ -147,21 +165,28 @@
 
             dataType: "JSON",
             success: function (data) {
-                console.log(data);
-                console.log(data[0]);
+                
+                for (var i = 0; i < SubjectIdsList.length; i++)
+                {
+                   
+                    if (SubjectIdsList[i] == data[0].id)
+                    {
+                        console.log("In condition");
+                       
+                        SubjectIdsList.splice(i, 1);
+
+                        
+                    }
+                }
+              
                 var element = document.createElement("option");
                 element.setAttribute("value", data[0].id);
                 element.textContent = data[0].name;
                 document.getElementById("SubjectListId").appendChild(element);
-                for (var i = 0; i < SubjectIdsList.length; i++) {
-                    if (SubjectIdsList[i] == data[0].name)
-                    {
-                        SubjectIdsList.splice(i, 1);
-                        counter--;
-                    }
-                }
+               
+                
 
-                alert(SubjectIdsList);
+               
             },
             error: function (req, status, error) {
                 console.log(msg);
