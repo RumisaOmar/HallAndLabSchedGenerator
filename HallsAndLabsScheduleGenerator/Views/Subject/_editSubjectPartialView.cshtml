@@ -2,10 +2,10 @@
 
 
 <div class="modal fade" id="EditSubject-@Model.Id">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Edit Subject</h4>
+                <h4 class="modal-title" style="margin-left:33%">Edit Subject</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -24,9 +24,9 @@
                         <input asp-for="Semester" class="form-control" />
                         <span asp-validation-for="Semester" class="text-danger"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default  btn-flat" data-dismiss="modal">Close</button>
-                        <input type="submit" value="Save" class="btn btn-success btn-flat" />
+                    <div style="margin-left:60px;margin-right:20px;margin-bottom:20px; margin-top:35px">
+                        <button type="button" style="width:170px"  class="btn btn-default  btn-flat" data-dismiss="modal">Close</button>
+                        <input type="submit" style="width:170px"  value="Save" class="btn btn-success btn-flat" />
                     </div>
                 </form>
             </div>

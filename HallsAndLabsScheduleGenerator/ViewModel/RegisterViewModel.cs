@@ -8,14 +8,25 @@ namespace HallsAndLabsScheduleGenerator.ViewModel
 {
     public class RegisterViewModel
     {
-          [Required]
-          [EmailAddress]
-         // [Display(Name = "Confirm Password")] 
-        public string Email { get; set; }
+
+        public string Id { get; set; }
+
+        [Required]
+        [Display(Name = "User name")]
+        public string UserName { get; set; }
+
+        //[Required]
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
+
+
+       //  [Required]
+         [Display(Name = "Email")] 
+          public string Email { get; set; }
           
           [Required]
           [DataType(DataType.Password)]
-         // [Display(Name = "Confirm Password")]
+          [Display(Name = "Confirm Password")]
           public string Password { get; set; }
 
           [DataType(DataType.Password)]

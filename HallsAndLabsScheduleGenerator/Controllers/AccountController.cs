@@ -22,23 +22,31 @@ namespace HallsAndLabsScheduleGenerator.Controllers
 
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Index()
+        {
+            var users = userManager.Users;
+            return View(users);
+        }
+
+
+        [HttpGet]
+        public IActionResult CreateUser()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> CreateUser(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email , EmailConfirmed = true};
+                var user = new IdentityUser { UserName = model.UserName, PhoneNumber = model.PhoneNumber, Email = model.Email , EmailConfirmed = true};
                 var result = await userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("index", "Home");
+                   // await signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("index", "Account");
                 }
 
                 foreach(var error in result.Errors)
@@ -49,6 +57,93 @@ namespace HallsAndLabsScheduleGenerator.Controllers
             }
             return View();
         }
+
+
+
+
+        ////Edit User
+        [HttpGet]
+        public async Task<ActionResult> EditUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if(user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id = {id} cannot be found.";
+                return View("NotFound");
+            }
+
+
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return View(model);
+        }
+
+
+        ////Post Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditUser(EditUserViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id = {model.Id} cannot be found.";
+                return View("NotFound");
+            }
+            else
+            {
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+
+                var result = await userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+            }
+            return View(model);
+        }
+
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with id = {id} cannot be found.";
+                return View("NotFound");
+            }
+            else
+            {
+               
+
+                var result = await userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+            }
+            return View("Index");
+        }
+
 
         [HttpGet]
         public IActionResult Login()
@@ -62,7 +157,7 @@ namespace HallsAndLabsScheduleGenerator.Controllers
             if (ModelState.IsValid)
             {
                 
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password,false, false);
+                var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
 
                 if (result.Succeeded)
                 {
