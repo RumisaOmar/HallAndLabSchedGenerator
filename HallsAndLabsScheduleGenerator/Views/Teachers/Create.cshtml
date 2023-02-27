@@ -1,4 +1,4 @@
-﻿@model HallsAndLabsScheduleGenerator.ViewModel.TeacherViewModel
+﻿@model ShedualeGenerator.Models.Teacher
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,19 +14,19 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Teacher.Name" class="control-label"></label>
-                <input asp-for="Teacher.Name" class="form-control" />
-                <span asp-validation-for="Teacher.Name" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Teacher.ContractType" class="control-label"></label>
-                <input asp-for="Teacher.ContractType" class="form-control" />
-                <span asp-validation-for="Teacher.ContractType" class="text-danger"></span>
+                <label asp-for="ContractType" class="control-label"></label>
+                <input asp-for="ContractType" class="form-control" />
+                <span asp-validation-for="ContractType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Teacher.Avalability" class="control-label"></label>
-                <input asp-for="Teacher.Avalability" class="form-control" />
-                <span asp-validation-for="Teacher.Avalability" class="text-danger"></span>
+                <label asp-for="Avalability" class="control-label"></label>
+                <input asp-for="Avalability" class="form-control" />
+                <span asp-validation-for="Avalability" class="text-danger"></span>
             </div>
             <section>
                 <select  asp-items="@ViewBag.SubjectList" id="SubjectListId">
@@ -41,7 +41,7 @@
                 <input type="hidden"  id="ListOfIds" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Creat" class="btn btn-primary" id="btnSubmit" />
+                <input type="submit" value="Creat" class="btn btn-primary" />
             </div>
 
         </form>
@@ -70,18 +70,34 @@
                 dataType: "JSON",
                 success: function (data) {
                     SubjectIdsList.push(parseInt($("#SubjectListId").val()))
+                    $.ajax({
+                        type: "POST",
+                        url: "/Teachers/AssignSubjectId/?id=" + $("#SubjectListId").val(),
+
+                        dataType: "JSON",
+                        success: function (data) {
+                            console.log("Nested ajax Ok")
+                        },
+                        error: function (req, status, error) {
+                            console.log(msg);
+                        }
+                    });
                     createNodes(data[0].name, data[0].semester);
                     $('#SubjectListId option:selected').remove();
 
 
-                    
                    
-                    alert(SubjectIdsList);
+                   
+                    
                 },
                 error: function (req, status, error) {
                     console.log(msg);
                 }
             });
+
+           
+
+
         });
 
 
@@ -94,20 +110,20 @@
         //createbtn.onclick(function () {
         //    alert("in the btn");
         //    console.log(SubjectIdsList);
-        //    $.ajax({
-        //        type: "GET",
-        //        url: "/Teachers/AssignSubjectIds/",
-        //        caches: false,
-        //        data: JSON.stringify(SubjectIdsList),
-        //        dataType: "JSON",
-        //        traditional: true,
-        //        success: function (data) {
-        //            alert("Ok")
-        //        },
-        //        error: function (req, status, error) {
-        //            console.log(msg);
-        //        }
-        //    });
+            //$.ajax({
+            //    type: "GET",
+            //    url: "/Teachers/AssignSubjectIds/",
+            //    caches: false,
+            //    data: JSON.stringify(SubjectIdsList),
+            //    dataType: "JSON",
+            //    traditional: true,
+            //    success: function (data) {
+            //        alert("Ok")
+            //    },
+            //    error: function (req, status, error) {
+            //        console.log(msg);
+            //    }
+            //});
 
         //});
 
@@ -120,12 +136,6 @@
         //form.subm(function () {
         //    alert("in Submit");
         //});
-
-        var submitBTN = document.getElementById("btnSubmit");
-        submitBTN.onclick(function () {
-            var formData = new FormData();
-            formData.append("SubjectIds", SubjectIdsList);
-        });
 
     });
 
@@ -152,12 +162,15 @@
     //    });
 
     //}
-        
+
+
+
+   
     function createOption(btn) {
         console.log("hi");
         console.log(btn.parentNode.childNodes[1]);
 
-
+        var idSend;
 
         $.ajax({
             type: "GET",
@@ -165,22 +178,23 @@
 
             dataType: "JSON",
             success: function (data) {
-                
-                for (var i = 0; i < SubjectIdsList.length; i++)
-                {
-                   
-                    if (SubjectIdsList[i] == data[0].id)
-                    {
-                        console.log("In condition");
-                       
-                        SubjectIdsList.splice(i, 1);
+                console.log("data= " + data[0].id);
+                $.ajax({
+                    type: "POST",
+                    url: "/Teachers/DeleteSubjectId/?id=" + data[0].id,
 
-                        
+                    dataType: "JSON",
+                    success: function (data) {
+                        console.log("Ajax Ok")
+                    },
+                    error: function (req, status, error) {
+                        console.log(msg);
                     }
-                }
+                });
               
                 var element = document.createElement("option");
                 element.setAttribute("value", data[0].id);
+                element.setAttribute("asp-for","SubjectIds")
                 element.textContent = data[0].name;
                 document.getElementById("SubjectListId").appendChild(element);
                
@@ -192,6 +206,7 @@
                 console.log(msg);
             }
         });
+        
     }
   
 

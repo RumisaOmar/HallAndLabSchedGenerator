@@ -15,7 +15,7 @@ namespace HallsAndLabsScheduleGenerator.Controllers
     {
         private readonly ApplicationDbContext _context;
         TeacherViewModel TeacherVM = new TeacherViewModel();
-        public List<int> SubjectIds = new List<int>();
+        public static List<int> SubjectIds = new List<int>();
         public TeachersController(ApplicationDbContext context)
         {
             _context = context;
@@ -57,39 +57,34 @@ namespace HallsAndLabsScheduleGenerator.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Teacher,SubjectIds[]")] TeacherViewModel teacherVM)
+        public async Task<IActionResult> Create([Bind("Id,Name,ContractType,Avalability")] Teacher teacher)
         {
-           // var teacher = Teacher;
-            var x = teacherVM.SubjectIds;
-            if ( ModelState.IsValid)
+            
+            
+            
+            
+            if (ModelState.IsValid)
             {
-                var teacher = teacherVM.Teacher;
 
-
-                    _context.Add(teacher);
+                _context.Add(teacher);
+                await _context.SaveChangesAsync();
+                
+                for (int i = 0; i < SubjectIds.Count; i++)
+                {
+                    Teacher_Subject subjectTeacher = new Teacher_Subject();
+                    subjectTeacher.TeacherId = _context.Teachers.Max(i => i.Id);
+                    subjectTeacher.SubjectId = SubjectIds[i];
+                    _context.Add(subjectTeacher);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                
-                
+
+                }
+               
+                return RedirectToAction(nameof(Index));
+
+
             }
-            return View(teacherVM);
+            return View(teacher);
         }
-
-        //public async Task<IActionResult> Create([Bind("Id,Name,ContractType,Avalability")] Teacher teacher)
-        //{
-        //    // var teacher = Teacher;
-        //    // SubjectIds = teacherVM.SubjectIds;
-        //    if (ModelState.IsValid)
-        //    {
-
-        //        _context.Add(teacher);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-
-
-        //    }
-        //    return View(teacher);
-        //}
 
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -189,9 +184,15 @@ namespace HallsAndLabsScheduleGenerator.Controllers
         }
 
         [HttpPost]
-        public JsonResult AssignSubjectIds(int model)
+        public JsonResult AssignSubjectId(int? id)
         {
-            //SubjectIds.AddRange(SubjectIdsList);
+            SubjectIds.Add(int.Parse(id.ToString()));
+            return Json("ok");
+        }
+        public JsonResult DeleteSubjectId(int id)
+        {
+
+            SubjectIds.Remove(int.Parse(id.ToString()));
             return Json("ok");
         }
     }
